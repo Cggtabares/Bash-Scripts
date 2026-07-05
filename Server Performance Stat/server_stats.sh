@@ -55,6 +55,22 @@ function get_disk_usage() {
 }
 
 
+function get_top_processes_by_cpu(){
+    echo "Top 5 Processes by CPU Usage"
+    echo "----------------------------"
+    ps -eo user,pid,ppid,cmd,%mem,%cpu,command --sort=-%cpu | head -n 6
+    echo "----------------------------"
+
+
+}
+
+function get_top_processes_by_memory(){
+    echo "Top 5 Processes by Memory Usage"
+    echo "-------------------------------"
+    ps -eo user,pid,ppid,cmd,%mem,%cpu,command --sort=-%mem | head -n 6
+    echo "-------------------------------"
+
+}
 
 
 
@@ -73,7 +89,7 @@ echo "|----------------|----------------|----------------|"
 echo "| Total CPU Usage | Total Memory Usage | Total Disk Usage |"
 echo "|----------------|----------------|----------------|"
 echo "| $(get_cpu_usage) | $(get_memory_usage) | $(get_disk_usage) |"
-
-
-
-
+echo "|----------------|----------------|----------------|"
+get_top_processes_by_cpu
+echo "|----------------|----------------|----------------|"
+get_top_processes_by_memory
