@@ -30,8 +30,8 @@ function get_cpu_usage() {
 
 #Total Memory Usage
 function get_memory_usage() {
-    used_mem=$(free -h | awk '{print $2}' | head -n 2 | tail -n 1)
-    free_mem=$(free -h | awk '{print $3}' | head -n 2 | tail -n 1)
+    used_mem=$(free -m | awk '{print $2}' | head -n 2 | tail -n 1)
+    free_mem=$(free -m | awk '{print $3}' | head -n 2 | tail -n 1)
     total_mem=$(( used_mem + free_mem ))
     used_mem_percentage=$(echo "scale=2;100 * $used_mem / $total_mem" | bc)
     echo "$used_mem_percentage%"
@@ -43,7 +43,7 @@ function get_disk_usage() {
     usage_disk=$(df -BG --output=used / | tail -n 1| tr -d 'G ')
     free_disk=$(df -BG --output=avail / | tail -n 1| tr -d 'G ')
     disk_usage_percentage_on_system=$(df -h --output=pcent / | tail -n 1)
-    echo "$disk_usage_percentage_on_system%"
+    echo "$disk_usage_percentage_on_system"
     echo "----------------|----------------|----------------|"
     echo "|Total Disk     | Total usage     | Total Free     |"
     echo "|----------------|----------------|----------------|"
