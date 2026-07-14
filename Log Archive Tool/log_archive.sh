@@ -19,10 +19,14 @@ function run_log_archive(){
         is_log_directory_provided "$arg_variable"
         echo "Archiving logs from directory: $arg_variable"
         is_archive_directory_created $(dirname "$arg_variable")/archive
-        #tar -czf /var/log/nginx/logs/$(date +%Y-%m-%d)_$(date +%H-%M-%S)logs.tar.gz "$arg_variable"/*.log
-        mv /var/log/nginx/logs/$(date +%Y-%m-%d)_$(date +%H-%M-%S)logs.tar.gz /var/log/nginx/archive/
-        #echo "Logs archived successfully."
-        #sleep 60
+        is_tar_created_and_log_moved
+        echo "Logs archived successfully."
+        read -p "Do you want to archive logs from another directory? (y/n): " yn
+        case $yn in
+            [Yy]* ) read -p "Enter the log directory: " arg_variable;;      
+            [Nn]* ) echo "Exiting the tool."; exit 0;;
+            * ) echo "Please answer yes or no.";;
+        esac
     done
 
 }
@@ -32,10 +36,10 @@ function is_archive_directory_created() {
         echo "Found Log files"
         if ([ ! -d "$1" ]); then
             echo "Archive directory does not exist. Creating archive directory."
-            #mkdir -p "$1"
-            exit 1
+            mkdir -p "$arg_variable"/archive
+        else
+            echo "Archive directory already exists."
         fi
-
     else
         echo "Log files cannot be found in directory $arg_variable."
         exit 1
@@ -47,6 +51,23 @@ function is_log_directory_provided() {
         echo "Log directory not provided. Please provide the log directory as an argument."
         exit 1
     fi
+}
+
+function is_tar_created_and_log_moved(){
+    file_created=$(dirname "$arg_variable")/$(date +%Y-%m-%d)_$(date +%H-%M-%S)logs.tar.gz
+    if ([ -f "$file_created" ]); then
+        echo "Tar already created."
+    else
+        echo "Creating tar file."
+        create_tar_and_move_log
+    fi
+
+}
+
+function create_tar_and_move_log(){
+    tar -czf $(dirname "$arg_variable")/$(date +%Y-%m-%d)_$(date +%H-%M-%S)logs.tar.gz "$arg_variable"/*.log
+    mv $(dirname "$arg_variable")/$(date +%Y-%m-%d)_$(date +%H-%M-%S)logs.tar.gz $(dirname "$arg_variable")/archive/
+
 }
 
 
